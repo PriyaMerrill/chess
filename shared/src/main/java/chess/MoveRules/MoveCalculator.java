@@ -38,9 +38,11 @@ public abstract class MoveCalculator{
 
             System.out.println("Accessing ChessBoard: End = " + endPosition);
 
-             */
+
 
             System.out.println("Generated move: Start = " + startPosition + ", End = " + endPosition);
+
+             */
 
             if (pieceInSpot == null) {
                 possibleMoves.add(new ChessMove(startPosition, endPosition, null));
