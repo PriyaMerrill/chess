@@ -8,11 +8,32 @@ import chess.ChessPosition;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 
 public class BishopMoves extends MoveCalculator {
     @Override
     public Collection<ChessMove> calculateMove(ChessBoard board, ChessPiece piece, ChessPosition position) {
+        List<ChessMove> possibleMoves = new ArrayList<>();
+
+        int [][] directions = {{1,1}, {1,-1}, {-1,1}, {-1,-1}};
+
+        for (int[] direction : directions) {
+            possibleMoves.addAll(validMove(board, piece, position, direction[0], direction[1]));
+        }
+
+
+        System.out.println("Final ordered moves:");
+        for (ChessMove move : possibleMoves) {
+            System.out.println("Move: Start = " + move.getStartPosition() + ", End = " + move.getEndPosition());
+        }
+
+
+        return possibleMoves;
+    }
+        /*
+        possibleMoves.addAll(validMove(board, piece, position, -1, 1));
+        possibleMoves.addAll(validMove(board, piece, position, 1, 1));
+        possibleMoves.addAll(validMove(board, piece, position, 1, -1));
+        possibleMoves.addAll(validMove(board, piece, position, -1, -1));
 
         List<ChessMove> topRightMoves = new ArrayList<>(validMove(board, piece, position, 1, 1));
         List<ChessMove> topLeftMoves = new ArrayList<>(validMove(board, piece, position, 1, -1));
@@ -25,15 +46,7 @@ public class BishopMoves extends MoveCalculator {
         movesInOrder.addAll(bottomRightMoves);
         movesInOrder.addAll(bottomLeftMoves);
 
-        System.out.println("Final ordered moves:");
-        for (ChessMove move : movesInOrder) {
-            System.out.println("Move: Start = " + move.getStartPosition() + ", End = " + move.getEndPosition());
-        }
 
-
-        return movesInOrder;
-    }
-        /*
         List<ChessMove> possibleMoves = new ArrayList<>();
         possibleMoves.addAll(validMove(board, piece, position, 1, 1));
         possibleMoves.addAll(validMove(board, piece, position, 1, -1));
