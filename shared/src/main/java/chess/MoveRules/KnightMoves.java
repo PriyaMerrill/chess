@@ -6,10 +6,9 @@ import chess.ChessPosition;
 
 import java.util.List;
 
-public class KingMoves implements MoveCalculator {
+public class KnightMoves implements MoveCalculator {
     public static List<ChessMove> makeMoves(ChessBoard board, ChessPosition startPosition){
-        int [][] directions = {{-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}};
-
+        int [][] directions = {{-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {1, 2}, {-1, 2}, {1, -2}, {-1, -2}};
         return MoveCalculator.limitedMoves(board, startPosition, directions);
     }
 }

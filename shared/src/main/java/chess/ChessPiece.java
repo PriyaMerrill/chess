@@ -1,8 +1,6 @@
 package chess;
 
-import chess.MoveRules.BishopMoves;
-import chess.MoveRules.KingMoves;
-import chess.MoveRules.MoveCalculator;
+import chess.MoveRules.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,6 +80,8 @@ public class ChessPiece {
         return switch (pieceType){
             case BISHOP -> BishopMoves.makeMoves(board, myPosition);
             case KING -> KingMoves.makeMoves(board, myPosition);
+            case KNIGHT -> KnightMoves.makeMoves(board, myPosition);
+            case ROOK -> RookMoves.makeMoves(board, myPosition);
             default -> null;
         };
     }
