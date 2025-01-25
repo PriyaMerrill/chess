@@ -32,12 +32,16 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {
         return squares[position.getRow()][position.getColumn()];
     }
-
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
         throw new RuntimeException("Not implemented");
+    }
+
+    public ChessGame.TeamColor getTeamOfSquare(ChessPosition position) {
+        ChessPiece piece = getPiece(position);
+        return (piece != null) ? piece.getTeamColor() : null;
     }
 }

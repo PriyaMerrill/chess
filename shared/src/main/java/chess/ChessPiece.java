@@ -5,6 +5,7 @@ import chess.MoveRules.MoveCalculator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -15,19 +16,10 @@ import java.util.Collection;
 public class ChessPiece {
     private final PieceType pieceType;
     private final ChessGame.TeamColor teamColor;
-    private MoveCalculator pieceCalculator;
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceType = type;
         this.teamColor = pieceColor;
-        //this.pieceCalculator = calculator;
-
-        switch (pieceType){
-            case BISHOP -> {
-                this.pieceCalculator = new BishopMoves();
-                break;
-            }
-            default -> this.pieceCalculator = null;
-        }
     }
 
     /**
@@ -56,6 +48,28 @@ public class ChessPiece {
         return pieceType;
     }
 
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceType=" + pieceType +
+                ", teamColor=" + teamColor +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return pieceType == that.pieceType && teamColor == that.teamColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceType, teamColor);
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -64,9 +78,9 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        if (pieceCalculator == null) {
-            return new ArrayList<>();
-        }
-        return pieceCalculator.calculateMove(board, this, myPosition);
+        return switch (pieceType){
+            case BISHOP -> BishopMoves.makeMoves(board, myPosition);
+            default -> null;
+        };
     }
 }
