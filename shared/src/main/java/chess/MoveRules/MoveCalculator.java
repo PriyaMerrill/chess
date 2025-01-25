@@ -21,11 +21,6 @@ public interface MoveCalculator {
         int startRow = startPosition.getRow();
         int startCol = startPosition.getColumn();
         ChessPiece startPiece = board.getPiece(startPosition);
-
-        if (startPiece == null) {
-            throw new IllegalArgumentException("No piece there.");
-        }
-
         ChessGame.TeamColor team = startPiece.getTeamColor();
 
         for (int[] direction : directions) {
@@ -51,6 +46,29 @@ public interface MoveCalculator {
                     }
                 }
                 steps++;
+            }
+        }
+        return moves;
+    }
+
+    static List<ChessMove> limitedMoves(ChessBoard board, ChessPosition startPosition, int[][] directions){
+        List<ChessMove> moves = new ArrayList<>();
+        ChessPiece startPiece = board.getPiece(startPosition);
+
+        ChessGame.TeamColor team = startPiece.getTeamColor();
+
+        for (int[] direction : directions) {
+            int endRow = startPosition.getRow() + direction[1];
+            int endCol = startPosition.getColumn() + direction[0];
+            ChessPosition endPosition = new ChessPosition(endRow, endCol);
+
+            if (onBoard(endPosition)) {
+                ChessPiece endPiece = board.getPiece(endPosition);
+                if (endPiece == null) {
+                    moves.add(new ChessMove(startPosition, endPosition, null));
+                } else if (endPiece.getTeamColor() != team) {
+                    moves.add(new ChessMove(startPosition, endPosition, null));
+                }
             }
         }
         return moves;

@@ -1,6 +1,7 @@
 package chess;
 
 import chess.MoveRules.BishopMoves;
+import chess.MoveRules.KingMoves;
 import chess.MoveRules.MoveCalculator;
 
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return switch (pieceType){
             case BISHOP -> BishopMoves.makeMoves(board, myPosition);
+            case KING -> KingMoves.makeMoves(board, myPosition);
             default -> null;
         };
     }
