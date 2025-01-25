@@ -13,7 +13,7 @@ public interface MoveCalculator {
     static boolean onBoard(ChessPosition position){
         int row = position.getRow();
         int col = position.getColumn();
-        return row >= 1 && row < 8 && col >= 1 && col < 8;
+        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
 
     static List<ChessMove> possibleMoves(ChessBoard board, ChessPosition startPosition, int[][] directions) {
@@ -40,10 +40,10 @@ public interface MoveCalculator {
                 if (!onBoard(endPosition)) {
                     pieceInPlace = true;
                 } else {
-                    ChessGame.TeamColor targetTeam = board.getTeamOfSquare(endPosition);
-                    if (targetTeam == null) {
+                    ChessPiece endPiece = board.getPiece(endPosition);
+                    if (endPiece == null) {
                         moves.add(new ChessMove(startPosition, endPosition, null));
-                    } else if (targetTeam != team) {
+                    } else if (endPiece.getTeamColor() != team) {
                         moves.add(new ChessMove(startPosition, endPosition, null));
                         pieceInPlace = true;
                     } else {
