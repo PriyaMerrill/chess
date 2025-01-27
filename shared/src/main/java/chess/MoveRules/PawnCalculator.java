@@ -5,7 +5,7 @@ import chess.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface pawnCalculator extends MoveCalculator {
+public interface PawnCalculator extends MoveCalculator {
     static List<ChessMove> pawn(ChessBoard board, ChessPosition startPosition, ChessGame.TeamColor team){
         int pawnDirection;
         List<ChessMove> moves = new ArrayList<>();
