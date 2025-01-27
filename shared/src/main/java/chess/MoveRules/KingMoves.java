@@ -10,6 +10,6 @@ public class KingMoves implements MoveCalculator {
     public static List<ChessMove> makeMoves(ChessBoard board, ChessPosition startPosition){
         int [][] directions = {{-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}};
 
-        return MoveCalculator.limitedMoves(board, startPosition, directions);
+        return MoveCalculator.generateMoves(board, startPosition, directions, true);
     }
 }

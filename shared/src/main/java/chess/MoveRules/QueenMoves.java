@@ -9,6 +9,6 @@ import java.util.List;
 public class QueenMoves {
     public static List<ChessMove> makeMoves(ChessBoard board, ChessPosition startPosition){
         int [][] directions = {{-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}};
-        return MoveCalculator.possibleMoves(board, startPosition, directions);
+        return MoveCalculator.generateMoves(board, startPosition, directions, false);
     }
 }
