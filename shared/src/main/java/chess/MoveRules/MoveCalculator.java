@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface MoveCalculator {
+    /*
     static List<ChessMove> calculateMoves(ChessBoard board, ChessPosition position) {
         return new ArrayList<>();
     }
+
+     */
 
     static boolean onBoard(ChessPosition position){
         int row = position.getRow();

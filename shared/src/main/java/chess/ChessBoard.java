@@ -41,8 +41,8 @@ public class ChessBoard {
      */
     public void resetBoard() {
         squares = new ChessPiece[8][8];
-        ChessGame.TeamColor teamColor = ChessGame.TeamColor.WHITE;
-        ChessGame.TeamColor otherTeamColor = ChessGame.TeamColor.BLACK;
+        //ChessGame.TeamColor teamColor = ChessGame.TeamColor.WHITE;
+        //ChessGame.TeamColor otherTeamColor = ChessGame.TeamColor.BLACK;
 
         addPiece(new ChessPosition(1,1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
         addPiece(new ChessPosition(1,8), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
