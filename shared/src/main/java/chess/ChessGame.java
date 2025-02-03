@@ -12,6 +12,9 @@ public class ChessGame {
 
     ChessBoard board;
     TeamColor team;
+    boolean check;
+    boolean checkmate;
+    boolean stalemate;
 
     public ChessGame() {
         this.board = new ChessBoard();
@@ -32,7 +35,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        this.team = team;
     }
 
     /**
@@ -71,7 +74,8 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        check = false;
+        return check;
     }
 
     /**
@@ -81,7 +85,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        checkmate = false;
+        return checkmate;
     }
 
     /**
@@ -92,7 +97,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        stalemate = false;
+        return stalemate;
     }
 
     /**
