@@ -108,8 +108,26 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        checkmate = false;
-        return checkmate;
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
+
+        ChessBoard board = this.board;
+        ChessPosition kingPos = findKing(teamColor, board);
+
+        ChessPiece king = board.getPiece(kingPos);
+        Collection<ChessMove> kingMove = king.pieceMoves(board, kingPos);
+        if (kingMove == null || kingMove.isEmpty()) {
+            return true;
+        }
+
+        for (ChessMove move : kingMove){
+            ChessPosition endKingPos = move.getEndPosition();
+            if (!checkMove(teamColor, endKingPos)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -169,5 +187,23 @@ public class ChessGame {
             }
         }
         return teamPieces;
+    }
+
+    private boolean checkMove(TeamColor teamColor, ChessPosition endKingPos){
+        TeamColor otherTeam = (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
+        List<ChessPosition> otherTeamPieces = getTeamPieces(otherTeam, board);
+        for (ChessPosition piecePos : otherTeamPieces){
+            ChessPiece piece = board.getPiece(piecePos);
+            if (piece == null){
+                continue;
+            }
+            Collection<ChessMove> possibleMoves = piece.pieceMoves(board, piecePos);
+            for (ChessMove move : possibleMoves){
+                if (move.getEndPosition().equals(endKingPos)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
