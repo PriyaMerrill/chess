@@ -1,7 +1,5 @@
 package chess;
 
-import chess.MoveRules.MoveCalculator;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,8 +12,8 @@ import java.util.List;
  */
 public class ChessGame {
 
-    ChessBoard board;
-    TeamColor teamTurn;
+    private ChessBoard board;
+    private TeamColor teamTurn;
 
     public ChessGame() {
         this.board = new ChessBoard();
@@ -65,10 +63,10 @@ public class ChessGame {
         }
         List<ChessMove> validMoves = new ArrayList<>();
         for (ChessMove move : piece.pieceMoves(board, startPosition)) {
-            ChessBoard test = new ChessBoard();
+            ChessBoard testBoard = new ChessBoard();
             try {
-                test.makeMove(move);
-                if (!isInCheck(piece.getTeamColor(), test)) {
+                testBoard.makeMove(move);
+                if (!isInCheck(piece.getTeamColor(), testBoard)) {
                     validMoves.add(move);
                 }
             } catch (InvalidMoveException ignored) {
@@ -92,11 +90,17 @@ public class ChessGame {
         if (piece.getTeamColor() != teamTurn) {
             throw new InvalidMoveException();
         }
+
+        Collection<ChessMove> possibleMoves = validMoves(move.getStartPosition());
+        boolean valid = false;
+        for (ChessMove possibleMove : possibleMoves) {
+
+        }
+
         if (!validMoves(move.getStartPosition()).contains(move)) {
             throw new InvalidMoveException();
         }
-        board.makeMove(move);
-        teamTurn = teamTurn.nextTurn();
+
     }
 
     /**
@@ -106,8 +110,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-
-        return false;
+        return isInCheck(teamColor, board);
     }
 
     private static boolean isInCheck(TeamColor teamColor, ChessBoard board) {
@@ -173,7 +176,7 @@ public class ChessGame {
         return board;
     }
 
-    private ChessPosition findKing(TeamColor teamColor, ChessBoard board) {
+    private static ChessPosition findKing(TeamColor teamColor, ChessBoard board) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
@@ -187,7 +190,7 @@ public class ChessGame {
         return null;
     }
 
-    private List<ChessPosition> getTeamPieces(TeamColor teamColor, ChessBoard board) {
+    private static List<ChessPosition> getTeamPieces(TeamColor teamColor, ChessBoard board) {
         List<ChessPosition> teamPieces = new ArrayList<>();
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
