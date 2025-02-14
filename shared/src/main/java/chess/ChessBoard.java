@@ -72,6 +72,29 @@ public class ChessBoard {
 
     }
 
+    public void makeMove(ChessMove move) throws InvalidMoveException {
+        ChessPiece piece = getPiece(move.getStartPosition());
+        if (piece == null) {
+            throw new InvalidMoveException();
+        }
+        addPiece(move.getStartPosition(), null);
+        addPiece(move.getEndPosition(), piece);
+
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            int promotionRow = (piece.getTeamColor() == ChessGame.TeamColor.WHITE) ? 8 : 1;
+            if (move.getEndPosition().getRow() == promotionRow && move.getPromotionPiece() != null) {
+                promotePawn(move.getEndPosition(), move.getPromotionPiece());
+            }
+        }
+    }
+    public void promotePawn(ChessPosition position, ChessPiece.PieceType newPieceType) {
+        ChessPiece pawn = getPiece(position);
+        if (pawn == null || pawn.getPieceType() != ChessPiece.PieceType.PAWN) {
+            return;
+        }
+        addPiece(position, new ChessPiece(pawn.getTeamColor(), newPieceType));
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
