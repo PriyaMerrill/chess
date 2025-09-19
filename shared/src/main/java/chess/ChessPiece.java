@@ -56,6 +56,7 @@ public class ChessPiece {
         return switch (pieceType) {
             case BISHOP -> BishopMoves.makeMoves(board, myPosition);
             case KING -> KingMoves.makeMoves(board, myPosition);
+            case KNIGHT -> KnightMoves.makeMoves(board, myPosition);
             default -> null;
         };
     }
