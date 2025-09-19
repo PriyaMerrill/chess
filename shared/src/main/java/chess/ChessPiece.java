@@ -58,6 +58,7 @@ public class ChessPiece {
             case KING -> KingMoves.makeMoves(board, myPosition);
             case KNIGHT -> KnightMoves.makeMoves(board, myPosition);
             case ROOK -> RookMoves.makeMoves(board, myPosition);
+            case QUEEN -> QueenMoves.makeMoves(board, myPosition);
             default -> null;
         };
     }
