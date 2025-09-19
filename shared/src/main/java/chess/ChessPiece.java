@@ -55,6 +55,7 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return switch (pieceType) {
             case BISHOP -> BishopMoves.makeMoves(board, myPosition);
+            case KING -> KingMoves.makeMoves(board, myPosition);
             default -> null;
         };
     }
