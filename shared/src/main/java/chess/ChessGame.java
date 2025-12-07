@@ -89,6 +89,14 @@ public class ChessGame {
         if (!possibleMoves.contains(move)){
             throw new InvalidMoveException("No");
         }
+
+        board.addPiece(move.getStartPosition(), null);
+
+        if (move.getPromotionPiece() != null) {
+            board.addPiece(move.getEndPosition(), new ChessPiece(turn, move.getPromotionPiece()));
+        } else {
+            board.addPiece(move.getEndPosition(), piece);
+        }
     }
 
     /**
