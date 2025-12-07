@@ -5,8 +5,7 @@ import chess.*;
 import java.util.ArrayList;
 import java.util.List;
 
-//centralized information that each piece can use
-public interface MoveCalculator {
+public interface  MoveCalculator {
     static boolean onBoard(ChessPosition position){
         int row = position.getRow();
         int col = position.getColumn();
