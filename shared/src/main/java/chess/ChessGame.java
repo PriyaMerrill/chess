@@ -156,7 +156,10 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return false;
+        if (!isInCheck(teamColor)){
+            return false;
+        }
+        return cantMove(teamColor);
     }
 
     /**
@@ -169,6 +172,30 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         return false;
     }
+
+
+    /**
+     * stalemate and checkmate have so many similar lines
+     * gotta put them in one function to call
+     * will look a lot better
+     * returns true to see if there is no way to get out of check or stalemate
+     */
+    private boolean cantMove (TeamColor teamColor) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() == teamColor){
+                    Collection<ChessMove> everyMove = validMoves(position);
+                    if (!everyMove.isEmpty()){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
 
     /**
      * Sets this game's chessboard with a given board
