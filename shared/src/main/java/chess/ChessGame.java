@@ -232,4 +232,14 @@ public class ChessGame {
         ChessGame chessGame = (ChessGame) obj;
         return turn == chessGame.turn && Objects.equals(board, chessGame.board);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(turn, board);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
