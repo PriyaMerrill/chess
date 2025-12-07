@@ -56,6 +56,20 @@ public class ChessGame {
         Collection<ChessMove> everyMove = currPiece.pieceMoves(board, startPosition);
         Collection<ChessMove> validMoves = new ArrayList<>();
 
+        for (ChessMove move : everyMove) {
+            ChessPiece stealPiece = board.getPiece(move.getEndPosition());
+            board.addPiece(move.getEndPosition(), currPiece);
+            board.addPiece(startPosition, null);
+
+            if (!isInCheck(currPiece.getTeamColor())) {
+                validMoves.add(move);
+            }
+
+            board.addPiece(startPosition, currPiece);
+            board.addPiece(move.getEndPosition(), stealPiece);
+        }
+
+        return validMoves;
     }
 
     /**
