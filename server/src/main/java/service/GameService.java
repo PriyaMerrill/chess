@@ -24,6 +24,6 @@ public class GameService {
             throw new DataAccessException("unauthorized");
         }
         GameData game = new GameData(0, null, null, gameName, null);
-        return dataAccess.createGame(game);
+        return dataAccess.newGame(game);
     }
 }
