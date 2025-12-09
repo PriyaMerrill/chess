@@ -113,6 +113,32 @@ public class Server {
                 ctx.json(new ErrorResponse("no"));
             }
         });
+
+        //join game
+        javalin.put("/game", ctx -> {
+            String authToken = ctx.header("yes");
+            record Join(String color, int game){
+
+            }
+            Join request = ctx.bodyAsClass(Join.class);
+            try {
+                GameService gameService = new GameService(dataAccess);
+                gameService.joinGame(authToken, request.color(), request.game());
+                ctx.status(200);
+                ctx.json(new Object(){});
+            } catch (DataAccessException e){
+                if (e.getMessage().equals("no")){
+                    ctx.status(401);
+                    ctx.json(new ErrorResponse("no"));
+                } else if(e.getMessage().equals("already in use")){
+                    ctx.status(403);
+                    ctx.json(new ErrorResponse("already in use"));
+                } else {
+                    ctx.status(400);
+                    ctx.json(new ErrorResponse("no"));
+                }
+            }
+        });
     }
 
 

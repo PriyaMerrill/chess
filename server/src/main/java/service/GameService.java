@@ -26,4 +26,31 @@ public class GameService {
         GameData game = new GameData(0, null, null, gameName, null);
         return dataAccess.newGame(game);
     }
+
+    public void joinGame(String authToken, String color, int game) throws DataAccessException {
+        if (dataAccess.getAuth(authToken)==null){
+            throw new DataAccessException("no");
+        }
+        GameData thisGame = dataAccess.getGame(game);
+        if (thisGame == null){
+            throw new DataAccessException("no");
+        }
+
+        String username = dataAccess.getAuth(authToken).username();
+        String white = thisGame.whiteUser();
+        String black = thisGame.blackUser();
+
+        if (color !=null && color.equalsIgnoreCase("WHITE")){
+            if (white!=null){
+                throw new DataAccessException("already in use");
+            }
+        } else if (color !=null && color.equalsIgnoreCase("BLACK")){
+            if (black != null){
+                throw new DataAccessException("already in use");
+            }
+            black=username;
+        }
+        GameData update = new GameData(game, white, black, thisGame.gameName(), thisGame.game());
+        dataAccess.gameUpdate(update);
+    }
 }
