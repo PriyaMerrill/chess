@@ -23,4 +23,15 @@ public class NewUser {
         dataAccess.auth(auth);
         return auth;
     }
+
+    public AuthData login(String username, String password) throws DataAccessException{
+        UserData user = dataAccess.getUser(username);
+        if(user==null || !user.password().equals(password)){
+            throw new DataAccessException("bad password");
+        }
+        String authToken = UUID.randomUUID().toString();
+        AuthData auth = new AuthData(authToken, username);
+        dataAccess.auth(auth);
+        return auth;
+    }
 }

@@ -50,6 +50,20 @@ public class Server {
                 ctx.json(new ErrorResponse("Error: already in use"));
             }
         });
+
+        //Login
+        javalin.post("/session", ctx -> {
+            UserData login = ctx.bodyAsClass(UserData.class);
+            try {
+                NewUser newUser = new NewUser(dataAccess);
+                AuthData auth = newUser.login(login.username(), login.password());
+                ctx.status(200);
+                ctx.json(auth);
+            } catch (DataAccessException e){
+                ctx.status(401);
+                ctx.json(new ErrorResponse("bad password"));
+            }
+        });
     }
 
 
