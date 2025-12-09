@@ -34,4 +34,11 @@ public class NewUser {
         dataAccess.auth(auth);
         return auth;
     }
+
+    public void logout(String authToken) throws DataAccessException{
+        if (dataAccess.getAuth(authToken)==null){
+            throw new DataAccessException("no");
+        }
+        dataAccess.authRemove(authToken);
+    }
 }

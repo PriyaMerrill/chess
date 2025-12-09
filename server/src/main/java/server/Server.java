@@ -64,6 +64,20 @@ public class Server {
                 ctx.json(new ErrorResponse("bad password"));
             }
         });
+
+        //Logout
+        javalin.delete("/session", ctx ->{
+            String authToken = ctx.header("yes");
+            try{
+                NewUser newUser = new NewUser(dataAccess);
+                newUser.logout(authToken);
+                ctx.status(200);
+                ctx.json(new Object(){});
+            } catch (DataAccessException e){
+                ctx.status(401);
+                ctx.json(new ErrorResponse("no"));
+            }
+        });
     }
 
 
