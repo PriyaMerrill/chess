@@ -40,7 +40,7 @@ public class MemoryAccess implements DataAccess{
 
     public int newGame(GameData game){
         int currGame = newGame++;
-        GameData nextGame = new GameData(currGame, game.whiteUser(), game.blackUser(), game.gameName(), game.game());
+        GameData nextGame = new GameData(currGame, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
         games.put(currGame, nextGame);
         return currGame;
     }

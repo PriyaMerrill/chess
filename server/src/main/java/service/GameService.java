@@ -29,25 +29,25 @@ public class GameService {
 
     public void joinGame(String authToken, String color, int game) throws DataAccessException {
         if (dataAccess.getAuth(authToken)==null){
-            throw new DataAccessException("no");
+            throw new DataAccessException("unauthorized");
         }
         GameData thisGame = dataAccess.getGame(game);
         if (thisGame == null){
-            throw new DataAccessException("no");
+            throw new DataAccessException("bad request");
         }
 
         String username = dataAccess.getAuth(authToken).username();
-        String white = thisGame.whiteUser();
-        String black = thisGame.blackUser();
+        String white = thisGame.whiteUsername();
+        String black = thisGame.blackUsername();
 
         if (color !=null && color.equalsIgnoreCase("WHITE")){
             if (white!=null){
-                throw new DataAccessException("already in use");
+                throw new DataAccessException("already taken");
             }
             white=username;
         } else if (color !=null && color.equalsIgnoreCase("BLACK")){
             if (black != null){
-                throw new DataAccessException("already in use");
+                throw new DataAccessException("already taken");
             }
             black=username;
         }

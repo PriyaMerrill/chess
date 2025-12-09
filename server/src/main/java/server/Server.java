@@ -8,9 +8,9 @@ import dataaccess.MemoryAccess;
 import model.UserData;
 import service.Clear;
 import service.NewUser;
-import model.UserData;
 import model.AuthData;
 import java.util.Collection;
+import java.util.Map;
 import model.GameData;
 import service.GameService;
 
@@ -31,8 +31,7 @@ public class Server {
             Clear clearServe = new Clear(dataAccess);
             clearServe.clear();
             ctx.status(200);
-            ctx.json(new Object() {
-            });
+            ctx.json(Map.of());
         });
 
         //Register
@@ -57,90 +56,108 @@ public class Server {
         //Login
         javalin.post("/session", ctx -> {
             UserData login = ctx.bodyAsClass(UserData.class);
+            if (login.username() == null || login.password() == null) {
+                ctx.status(400);
+                ctx.json(new ErrorResponse("Error: bad request"));
+                return;
+            }
             try {
                 NewUser newUser = new NewUser(dataAccess);
                 AuthData auth = newUser.login(login.username(), login.password());
                 ctx.status(200);
                 ctx.json(auth);
-            } catch (DataAccessException e){
+            } catch (DataAccessException e) {
                 ctx.status(401);
-                ctx.json(new ErrorResponse("bad password"));
+                ctx.json(new ErrorResponse("Error: unauthorized"));
             }
         });
 
         //Logout
-        javalin.delete("/session", ctx ->{
-            String authToken = ctx.header("yes");
-            try{
+        javalin.delete("/session", ctx -> {
+            String authToken = ctx.header("authorization");
+            try {
                 NewUser newUser = new NewUser(dataAccess);
                 newUser.logout(authToken);
                 ctx.status(200);
-                ctx.json(new Object(){});
-            } catch (DataAccessException e){
+                ctx.json(Map.of());
+            } catch (DataAccessException e) {
                 ctx.status(401);
-                ctx.json(new ErrorResponse("no"));
+                ctx.json(new ErrorResponse("Error: unauthorized"));
             }
         });
 
         //games
         javalin.get("/game", ctx -> {
-            String authToken = ctx.header("yes");
+            String authToken = ctx.header("authorization");
             try {
                 GameService gameService = new GameService(dataAccess);
                 Collection<GameData> games = gameService.games(authToken);
                 ctx.status(200);
                 ctx.json(new GameResponse(games));
-            } catch (DataAccessException e){
+            } catch (DataAccessException e) {
                 ctx.status(401);
-                ctx.json(new ErrorResponse("no"));
+                ctx.json(new ErrorResponse("Error: unauthorized"));
             }
         });
 
         //create game
         javalin.post("/game", ctx -> {
-            String authToken = ctx.header("yes");
-            record GameRequest(String gameName){
+            String authToken = ctx.header("authorization");
+            record GameRequest(String gameName) {
 
             }
             GameRequest gameRequest = ctx.bodyAsClass(GameRequest.class);
+            if (gameRequest.gameName() == null) {
+                ctx.status(400);
+                ctx.json(new ErrorResponse("Error: bad request"));
+                return;
+            }
             try {
                 GameService gameService = new GameService(dataAccess);
                 int game = gameService.createGame(authToken, gameRequest.gameName());
                 ctx.status(200);
                 ctx.json(new CreateGameResponse(game));
-            } catch (DataAccessException e){
-                ctx.status(400);
-                ctx.json(new ErrorResponse("no"));
+            } catch (DataAccessException e) {
+                ctx.status(401);
+                ctx.json(new ErrorResponse("Error: unauthorized"));
             }
         });
 
         //join game
         javalin.put("/game", ctx -> {
-            String authToken = ctx.header("yes");
-            record Join(String color, int game){
-
+            String authToken = ctx.header("authorization");
+            record JoinRequest(String playerColor, Integer gameID) {
             }
-            Join request = ctx.bodyAsClass(Join.class);
+            JoinRequest request = ctx.bodyAsClass(JoinRequest.class);
+            if (request.playerColor() == null || request.playerColor().isEmpty() || request.gameID() == null) {
+                ctx.status(400);
+                ctx.json(new ErrorResponse("Error: bad request"));
+                return;
+            }
+            if (!request.playerColor().equalsIgnoreCase("WHITE") && !request.playerColor().equalsIgnoreCase("BLACK")) {
+                ctx.status(400);
+                ctx.json(new ErrorResponse("Error: bad request"));
+                return;
+            }
             try {
                 GameService gameService = new GameService(dataAccess);
-                gameService.joinGame(authToken, request.color(), request.game());
+                gameService.joinGame(authToken, request.playerColor(), request.gameID());
                 ctx.status(200);
-                ctx.json(new Object(){});
-            } catch (DataAccessException e){
-                if (e.getMessage().equals("no")){
+                ctx.json(Map.of());
+            } catch (DataAccessException e) {
+                if (e.getMessage().equals("unauthorized")) {
                     ctx.status(401);
-                    ctx.json(new ErrorResponse("no"));
-                } else if(e.getMessage().equals("already in use")){
+                    ctx.json(new ErrorResponse("Error: unauthorized"));
+                } else if (e.getMessage().equals("already taken")) {
                     ctx.status(403);
-                    ctx.json(new ErrorResponse("already in use"));
+                    ctx.json(new ErrorResponse("Error: already taken"));
                 } else {
                     ctx.status(400);
-                    ctx.json(new ErrorResponse("no"));
+                    ctx.json(new ErrorResponse("Error: bad request"));
                 }
             }
         });
     }
-
 
     public int run(int desiredPort) {
         javalin.start(desiredPort);
@@ -151,13 +168,13 @@ public class Server {
         javalin.stop();
     }
 
-    record ErrorResponse(String errorMessage){
+    record ErrorResponse(String message){
 
     }
     record GameResponse(Collection<GameData> games){
 
     }
-    record CreateGameResponse(int game){
+    record CreateGameResponse(int gameID){
 
     }
 }
