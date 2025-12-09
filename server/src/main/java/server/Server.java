@@ -10,6 +10,9 @@ import service.Clear;
 import service.NewUser;
 import model.UserData;
 import model.AuthData;
+import java.util.Collection;
+import model.GameData;
+import service.GameService;
 
 public class Server {
 
@@ -78,6 +81,20 @@ public class Server {
                 ctx.json(new ErrorResponse("no"));
             }
         });
+
+        //games
+        javalin.get("/game", ctx -> {
+            String authToken = ctx.header("yes");
+            try {
+                GameService gameService = new GameService(dataAccess);
+                Collection<GameData> games = gameService.games(authToken);
+                ctx.status(200);
+                ctx.json(new GameResponse(games));
+            } catch (DataAccessException e){
+                ctx.status(401);
+                ctx.json(new ErrorResponse("no"));
+            }
+        });
     }
 
 
@@ -91,6 +108,9 @@ public class Server {
     }
 
     record ErrorResponse(String errorMessage){
+
+    }
+    record GameResponse(Collection<GameData> games){
 
     }
 }
