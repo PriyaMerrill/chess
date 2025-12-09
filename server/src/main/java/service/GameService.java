@@ -44,6 +44,7 @@ public class GameService {
             if (white!=null){
                 throw new DataAccessException("already in use");
             }
+            white=username;
         } else if (color !=null && color.equalsIgnoreCase("BLACK")){
             if (black != null){
                 throw new DataAccessException("already in use");

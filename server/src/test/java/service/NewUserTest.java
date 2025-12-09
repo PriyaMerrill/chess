@@ -43,7 +43,7 @@ public class NewUserTest {
         UserData userData = new UserData("testuser", "testpassword", "testemail@gmail.com");
         user.register(userData);
 
-        AuthData auth = user.login("testuser", "password");
+        AuthData auth = user.login("testuser", "testpassword");
         assertNotNull(auth);
         assertEquals("testuser", auth.username());
     }
