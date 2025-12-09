@@ -95,6 +95,24 @@ public class Server {
                 ctx.json(new ErrorResponse("no"));
             }
         });
+
+        //create game
+        javalin.post("/game", ctx -> {
+            String authToken = ctx.header("yes");
+            record GameRequest(String gameName){
+
+            }
+            GameRequest gameRequest = ctx.bodyAsClass(GameRequest.class);
+            try {
+                GameService gameService = new GameService(dataAccess);
+                int game = gameService.createGame(authToken, gameRequest.gameName());
+                ctx.status(200);
+                ctx.json(new CreateGameResponse(game));
+            } catch (DataAccessException e){
+                ctx.status(400);
+                ctx.json(new ErrorResponse("no"));
+            }
+        });
     }
 
 
@@ -111,6 +129,9 @@ public class Server {
 
     }
     record GameResponse(Collection<GameData> games){
+
+    }
+    record CreateGameResponse(int game){
 
     }
 }
