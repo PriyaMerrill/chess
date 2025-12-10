@@ -1,6 +1,8 @@
 package server;
 
+import com.mysql.cj.callback.MysqlCallback;
 import dataaccess.DataAccessException;
+import dataaccess.SqlDataAccess;
 import io.javalin.*;
 
 import dataaccess.DataAccess;
@@ -21,9 +23,13 @@ public class Server {
     private final DataAccess dataAccess;
 
     public Server() {
-        javalin = Javalin.create(config -> config.staticFiles.add("web"));
+        try {
+            dataAccess = new SqlDataAccess();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Failed to initialize database: " + e.getMessage());
+        }
 
-        dataAccess = new MemoryAccess();
+        javalin = Javalin.create(config -> config.staticFiles.add("web"));
         // Register your endpoints and exception handlers here.
 
         //clear

@@ -4,6 +4,8 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.UUID;
 
 public class NewUser {
@@ -24,17 +26,19 @@ public class NewUser {
         return auth;
     }
 
-    public AuthData login(String username, String password) throws DataAccessException{
+    public AuthData login(String username, String password) throws DataAccessException {
         UserData user = dataAccess.getUser(username);
-        if(user==null || !user.password().equals(password)){
-            throw new DataAccessException("bad password");
+
+        if (user == null || !BCrypt.checkpw(password, user.password())) {
+            throw new DataAccessException("unauthorized");
         }
+
         String authToken = UUID.randomUUID().toString();
         AuthData auth = new AuthData(authToken, username);
         dataAccess.auth(auth);
+
         return auth;
     }
-
     public void logout(String authToken) throws DataAccessException{
         if (dataAccess.getAuth(authToken)==null){
             throw new DataAccessException("no");
