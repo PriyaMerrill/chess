@@ -20,6 +20,14 @@ public class ChessGame {
         turn = TeamColor.WHITE;
     }
 
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
     /**
      * @return Which team's turn it is
      */
