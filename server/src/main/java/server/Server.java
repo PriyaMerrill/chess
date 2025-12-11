@@ -1,12 +1,10 @@
 package server;
 
-import com.mysql.cj.callback.MysqlCallback;
 import dataaccess.DataAccessException;
 import dataaccess.SqlDataAccess;
 import io.javalin.*;
 
 import dataaccess.DataAccess;
-import dataaccess.MemoryAccess;
 import model.UserData;
 import service.Clear;
 import service.NewUser;
@@ -29,7 +27,12 @@ public class Server {
             throw new RuntimeException("Failed to initialize database: " + e.getMessage());
         }
 
-        javalin = Javalin.create(config -> config.staticFiles.add("web"));
+        javalin = Javalin.create(config -> {
+            config.staticFiles.add("web");
+        }).exception(DataAccessException.class, (e, ctx) -> {
+            ctx.status(500);
+            ctx.json(Map.of("message", "Error: " + e.getMessage()));
+        });
         // Register your endpoints and exception handlers here.
 
         //clear
@@ -54,6 +57,9 @@ public class Server {
                 ctx.status(200);
                 ctx.json(auth);
             } catch (DataAccessException e) {
+                if (e.getMessage() != null && e.getMessage().contains("connection")) {
+                    throw e;
+                }
                 ctx.status(403);
                 ctx.json(new ErrorResponse("Error: already in use"));
             }
@@ -73,6 +79,9 @@ public class Server {
                 ctx.status(200);
                 ctx.json(auth);
             } catch (DataAccessException e) {
+                if (e.getMessage() != null && e.getMessage().contains("connection")) {
+                    throw e;
+                }
                 ctx.status(401);
                 ctx.json(new ErrorResponse("Error: unauthorized"));
             }
@@ -87,6 +96,9 @@ public class Server {
                 ctx.status(200);
                 ctx.json(Map.of());
             } catch (DataAccessException e) {
+                if (e.getMessage() != null && e.getMessage().contains("connection")) {
+                    throw e;
+                }
                 ctx.status(401);
                 ctx.json(new ErrorResponse("Error: unauthorized"));
             }
@@ -101,6 +113,9 @@ public class Server {
                 ctx.status(200);
                 ctx.json(new GameResponse(games));
             } catch (DataAccessException e) {
+                if (e.getMessage() != null && e.getMessage().contains("connection")) {
+                    throw e;
+                }
                 ctx.status(401);
                 ctx.json(new ErrorResponse("Error: unauthorized"));
             }
@@ -124,6 +139,9 @@ public class Server {
                 ctx.status(200);
                 ctx.json(new CreateGameResponse(game));
             } catch (DataAccessException e) {
+                if (e.getMessage() != null && e.getMessage().contains("connection")) {
+                    throw e;
+                }
                 ctx.status(401);
                 ctx.json(new ErrorResponse("Error: unauthorized"));
             }
@@ -151,6 +169,9 @@ public class Server {
                 ctx.status(200);
                 ctx.json(Map.of());
             } catch (DataAccessException e) {
+                if (e.getMessage() != null && e.getMessage().contains("connection")) {
+                    throw e;
+                }
                 if (e.getMessage().equals("unauthorized")) {
                     ctx.status(401);
                     ctx.json(new ErrorResponse("Error: unauthorized"));
