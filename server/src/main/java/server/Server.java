@@ -16,6 +16,8 @@ import java.util.Map;
 import model.GameData;
 import service.GameService;
 
+import org.eclipse.jetty.websocket.api.Session;
+
 public class Server {
 
     private final Javalin javalin;
@@ -33,17 +35,21 @@ public class Server {
 
         javalin = Javalin.create(config -> {
             config.staticFiles.add("web");
-            config.jetty.webSocketFactoryConfig(wsConfig -> {
-                wsConfig.setIdleTimeout(java.time.Duration.ofMinutes(5));
-            });
         }).exception(DataAccessException.class, (e, ctx) -> {
             ctx.status(500);
             ctx.json(Map.of("message", "Error: " + e.getMessage()));
         });
 
         // WebSocket
-        javalin.ws("/ws", ws -> {
-            ws.onMessage(ctx -> webSocketHandler.onMessage(ctx.session(), ctx.message()));
+        javalin.ws("/ws", config -> {
+            config.onMessage(messageCtx -> {
+                try {
+                    Session session = messageCtx.session;
+                    webSocketHandler.onMessage(session, messageCtx.message());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         });
 
         //clear
