@@ -9,6 +9,8 @@ import model.UserData;
 import service.Clear;
 import service.NewUser;
 import model.AuthData;
+import server.websocket.WebSocketHandler;
+
 import java.util.Collection;
 import java.util.Map;
 import model.GameData;
@@ -27,13 +29,22 @@ public class Server {
             throw new RuntimeException("Failed to initialize database: " + e.getMessage());
         }
 
+        WebSocketHandler webSocketHandler = new WebSocketHandler(dataAccess);
+
         javalin = Javalin.create(config -> {
             config.staticFiles.add("web");
+            config.jetty.webSocketFactoryConfig(wsConfig -> {
+                wsConfig.setIdleTimeout(java.time.Duration.ofMinutes(5));
+            });
         }).exception(DataAccessException.class, (e, ctx) -> {
             ctx.status(500);
             ctx.json(Map.of("message", "Error: " + e.getMessage()));
         });
-        // Register your endpoints and exception handlers here.
+
+        // WebSocket
+        javalin.ws("/ws", ws -> {
+            ws.onMessage(ctx -> webSocketHandler.onMessage(ctx.session(), ctx.message()));
+        });
 
         //clear
         javalin.delete("/db", ctx -> {
