@@ -13,6 +13,7 @@ import java.util.Objects;
 public class ChessGame {
     private ChessBoard board;
     private TeamColor turn;
+    private boolean gameOver = false;
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
