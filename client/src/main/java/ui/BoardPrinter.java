@@ -101,5 +101,6 @@ public class BoardPrinter {
             case ROOK -> "R";
             case PAWN -> "P";
         };
+
     }
 }
