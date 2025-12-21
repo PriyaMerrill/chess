@@ -1,39 +1,43 @@
 package ui;
 
+import chess.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import static ui.EscapeSequences.*;
 
 public class BoardPrinter {
-    private static final String[] WHITE_COLUMNS = {"a", "b", "c", "d", "e", "f", "g", "h"};
-    private static final String[] BLACK_COLUMNS = {"h", "g", "f", "e", "d", "c", "b", "a"};
 
-    private static final String[][] START_BOARD = {
-            {"R", "N", "B", "Q", "K", "B", "N", "R"},
-            {"P", "P", "P", "P", "P", "P", "P", "P"},
-            {" ", " ", " ", " ", " ", " ", " ", " "},
-            {" ", " ", " ", " ", " ", " ", " ", " "},
-            {" ", " ", " ", " ", " ", " ", " ", " "},
-            {" ", " ", " ", " ", " ", " ", " ", " "},
-            {"P", "P", "P", "P", "P", "P", "P", "P"},
-            {"R", "N", "B", "Q", "K", "B", "N", "R"}
-    };
-    private static final boolean[][] BLACK_PIECE = {
-            {true, true, true, true, true, true, true, true},
-            {true, true, true, true, true, true, true, true},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false},
-            {false, false, false, false, false, false, false, false}
-    };
+    public static void printBoard(ChessGame game, boolean blackPerspective) {
+        printBoardWithHighlights(game, blackPerspective, null, null);
+    }
 
-    public static void printBoard(boolean black) {
+    public static void printBoard(boolean blackPerspective) {
+        ChessGame game = new ChessGame();
+        printBoard(game, blackPerspective);
+    }
+
+    public static void printBoardWithHighlights(ChessGame game, boolean blackPerspective, 
+                                                  ChessPosition selectedPos, Collection<ChessMove> validMoves) {
         System.out.println();
+        
+        ChessBoard board = game.getBoard();
+        
+        Set<ChessPosition> highlightSquares = new HashSet<>();
+        if (validMoves != null) {
+            for (ChessMove move : validMoves) {
+                highlightSquares.add(move.getEndPosition());
+            }
+        }
 
-        String[] columns = black ? BLACK_COLUMNS : WHITE_COLUMNS;
-        int startRow = black ? 0 : 7;
-        int endRow = black ? 8 : -1;
-        int rowMove = black ? 1 : -1;
+        String[] columns = blackPerspective ? 
+            new String[]{"h", "g", "f", "e", "d", "c", "b", "a"} :
+            new String[]{"a", "b", "c", "d", "e", "f", "g", "h"};
+
+        int startRow = blackPerspective ? 1 : 8;
+        int endRow = blackPerspective ? 9 : 0;
+        int rowStep = blackPerspective ? 1 : -1;
 
         System.out.print("   ");
         for (String col : columns) {
@@ -41,38 +45,61 @@ public class BoardPrinter {
         }
         System.out.println();
 
-        int rowNum = black ? 1 : 8;
-        for (int row = startRow; row != endRow; row += rowMove) {
-            System.out.print(" " + rowNum + " ");
-            for (int col = 0; col < 8; col++) {
-                int realCol = black ? 7 - col : col;
-                boolean lightSquare = (row + realCol) % 2 == 1;
+        for (int row = startRow; row != endRow; row += rowStep) {
+            System.out.print(" " + row + " ");
 
-                String color = lightSquare ? SET_BG_COLOR_LIGHT_GREY : SET_BG_COLOR_DARK_GREY;
-                String piece = START_BOARD[row][realCol];
-                String pieceColor;
+            int startCol = blackPerspective ? 8 : 1;
+            int endCol = blackPerspective ? 0 : 9;
+            int colStep = blackPerspective ? -1 : 1;
 
-                if (piece.equals(" ")) {
-                    pieceColor = "";
-                } else if (BLACK_PIECE[row][realCol]) {
-                    pieceColor = SET_TEXT_COLOR_BLUE;
+            for (int col = startCol; col != endCol; col += colStep) {
+                ChessPosition pos = new ChessPosition(row, col);
+                boolean isLightSquare = (row + col) % 2 == 0;
+                boolean isHighlighted = highlightSquares.contains(pos);
+                boolean isSelected = selectedPos != null && selectedPos.equals(pos);
+
+                String bgColor;
+                if (isSelected) {
+                    bgColor = SET_BG_COLOR_YELLOW;
+                } else if (isHighlighted) {
+                    bgColor = isLightSquare ? SET_BG_COLOR_GREEN : SET_BG_COLOR_DARK_GREEN;
                 } else {
-                    pieceColor = SET_TEXT_COLOR_RED;
+                    bgColor = isLightSquare ? SET_BG_COLOR_LIGHT_GREY : SET_BG_COLOR_DARK_GREY;
                 }
 
-                System.out.print(color + pieceColor + " " + piece + " " + RESET_BG_COLOR + RESET_TEXT_COLOR);
+                ChessPiece piece = board.getPiece(pos);
+                String pieceStr = getPieceString(piece);
+                String pieceColor = "";
+                if (piece != null) {
+                    pieceColor = piece.getTeamColor() == ChessGame.TeamColor.WHITE ? 
+                        SET_TEXT_COLOR_RED : SET_TEXT_COLOR_BLUE;
+                }
+
+                System.out.print(bgColor + pieceColor + " " + pieceStr + " " + RESET_BG_COLOR + RESET_TEXT_COLOR);
             }
 
-            System.out.println(" " + rowNum);
-            rowNum += black ? 1 : -1;
+            System.out.println(" " + row);
         }
 
         System.out.print("   ");
         for (String col : columns) {
             System.out.print(" " + col + " ");
         }
+        System.out.println();
+        System.out.println();
+    }
 
-        System.out.println();
-        System.out.println();
+    private static String getPieceString(ChessPiece piece) {
+        if (piece == null) {
+            return " ";
+        }
+        return switch (piece.getPieceType()) {
+            case KING -> "K";
+            case QUEEN -> "Q";
+            case BISHOP -> "B";
+            case KNIGHT -> "N";
+            case ROOK -> "R";
+            case PAWN -> "P";
+        };
     }
 }

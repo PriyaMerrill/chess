@@ -70,7 +70,7 @@ public class WebSocketTests {
     @Order(2)
     @DisplayName("Normal Connect")
     public void connectGood() {
-        setupNormalGame();    //Connects 3 Users to the game, and notifies others upon connection
+        setupNormalGame();
     }
 
     @Test
@@ -94,7 +94,6 @@ public class WebSocketTests {
     public void validMove() {
         setupNormalGame();
 
-        //make a valid pawn move
         ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(3, 5), null);
         makeMove(white, gameID, move,true, false, Set.of(black, observer), Set.of(), "move made");
     }
@@ -105,7 +104,6 @@ public class WebSocketTests {
     public void makeMoveBadAuthtoken() {
         setupNormalGame();
 
-        //make valid move command with wrong authtoken
         ChessMove move = new ChessMove(new ChessPosition(2, 6), new ChessPosition(4, 6), null);
         makeMove(new WebsocketUser(white.username(), "badAuth"), gameID, move, false, false,
                 Set.of(black, observer), Set.of(), "move made with bad authtoken");
@@ -117,7 +115,6 @@ public class WebSocketTests {
     public void invalidMoveBadMove() {
         setupNormalGame();
 
-        //try to move rook through a pawn - invalid move
         ChessMove move = new ChessMove(new ChessPosition(1, 1), new ChessPosition(1, 5), null);
         makeMove(white, gameID, move, false, false, Set.of(black, observer), Set.of(), "invalid move attempted");
     }
@@ -128,7 +125,6 @@ public class WebSocketTests {
     public void invalidMoveWrongTurn() {
         setupNormalGame();
 
-        //try to move pawn out of turn - would be valid if in turn
         ChessMove move = new ChessMove(new ChessPosition(7, 5), new ChessPosition(5, 5), null);
         makeMove(black, gameID, move, false, false, Set.of(white, observer), Set.of(), "move made out of turn");
     }
@@ -139,7 +135,6 @@ public class WebSocketTests {
     public void invalidMoveOpponent() {
         setupNormalGame();
 
-        //attempt to have black player move white piece
         ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
         makeMove(black, gameID, move, false, false, Set.of(white, observer), Set.of(), "move made for opponent");
     }
@@ -150,7 +145,6 @@ public class WebSocketTests {
     public void invalidMoveObserver() {
         setupNormalGame();
 
-        //have observer attempt to make an otherwise valid move
         ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
         makeMove(observer, gameID, move, false, false, Set.of(white, black), Set.of(), "observer attempts move");
     }
@@ -161,7 +155,6 @@ public class WebSocketTests {
     public void invalidMoveGameOver() {
         setupNormalGame();
 
-        //Fools mate setup
         ChessMove move = new ChessMove(new ChessPosition(2, 7), new ChessPosition(4, 7), null);
         makeMove(white, gameID, move, true, false, Set.of(black, observer), Set.of(), "first move");
         move = new ChessMove(new ChessPosition(7, 5), new ChessPosition(6, 5), null);
@@ -170,7 +163,7 @@ public class WebSocketTests {
         makeMove(white, gameID, move, true, false, Set.of(black, observer), Set.of(), "third move");
         move = new ChessMove(new ChessPosition(8, 4), new ChessPosition(4, 8), null);
         makeMove(black, gameID, move, true, true, Set.of(white, observer), Set.of(), "checkmate move");
-        //checkmate--attempt another move
+
         move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
         makeMove(white, gameID, move, false, false, Set.of(black, observer), Set.of(), "invalid move");
     }
@@ -190,7 +183,6 @@ public class WebSocketTests {
         setupNormalGame();
         resign(black, gameID, true, Set.of(white, observer), Set.of(), "resign");
 
-        //attempt to make a move after other player resigns
         ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
         makeMove(white, gameID, move, false, false, Set.of(black, observer), Set.of(), "move after resign");
     }
@@ -201,7 +193,6 @@ public class WebSocketTests {
     public void invalidResignObserver() {
         setupNormalGame();
 
-        //have observer try to resign - should reject
         resign(observer, gameID, false, Set.of(white, black), Set.of(), "observer resign");
     }
 
@@ -212,7 +203,6 @@ public class WebSocketTests {
         setupNormalGame();
         resign(black, gameID, true, Set.of(white, observer), Set.of(), "first resign");
 
-        //attempt to resign after other player resigns
         resign(white, gameID, false, Set.of(black, observer), Set.of(), "second resign");
     }
 
@@ -222,10 +212,8 @@ public class WebSocketTests {
     public void leaveGame() {
         setupNormalGame();
 
-        //have white player leave--all other players get notified, white player should not be
         leave(white, gameID, Set.of(black, observer), Set.of(), "player/first leave");
 
-        //observer leaves - only black player should get a notification
         leave(observer, gameID, Set.of(black), Set.of(white), "observer/second leave");
     }
 
@@ -235,15 +223,12 @@ public class WebSocketTests {
     public void joinAfterLeaveGame() {
         setupNormalGame();
 
-        //have white player leave--all other players get notified, white player should not be
         leave(white, gameID, Set.of(black, observer), Set.of(), "normal leave");
 
-        //replace white player with a different player
         WebsocketUser white2 = registerUser("white2", "WHITE", "white2@chess.com");
         joinGame(gameID, white2, ChessGame.TeamColor.WHITE);
         connectToGame(white2, gameID, true, Set.of(black, observer), Set.of(white), "connect after leave");
 
-        //new white player can make move
         ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(3, 5), null);
         makeMove(white2, gameID, move, true, false, Set.of(black, observer), Set.of(white), "new player moves");
     }
@@ -254,7 +239,6 @@ public class WebSocketTests {
     public void multipleConcurrentGames() {
         setupNormalGame();
 
-        //setup parallel game
         WebsocketUser white2 = registerUser("white2", "WHITE", "white2@chess.com");
         WebsocketUser black2 = registerUser("black2", "BLACK", "black2@chess.com");
         WebsocketUser observer2 = registerUser("observer2", "OBSERVER", "observer2@chess.com");
@@ -265,14 +249,11 @@ public class WebSocketTests {
         connectToGame(black2, otherGameID, true, Set.of(white2), Set.of(white, black, observer), "connect 2 to other game");
         connectToGame(observer2, otherGameID, true,  Set.of(white2, black2), Set.of(white, black, observer), "connect 3 to other game");
 
-        //make move in first game - only users in first game should be notified
         ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(3, 5), null);
         makeMove(white, gameID, move, true, false, Set.of(black, observer), Set.of(white2, black2, observer2), "move from game 1");
 
-        //resign in second game - only users in second game should be notified
         resign(white2, otherGameID, true, Set.of(black2, observer2), Set.of(white, black, observer), "resign from game 2");
 
-        //player leave in first game - only users remaining in first game should be notified
         leave(white, gameID, Set.of(black, observer), Set.of(white2, black2, observer2), "leave from game 1");
     }
 

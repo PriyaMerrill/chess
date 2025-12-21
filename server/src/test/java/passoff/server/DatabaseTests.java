@@ -52,20 +52,16 @@ public class DatabaseTests {
         TestAuthResult regResult = serverFacade.register(TEST_USER);
         String auth = regResult.getAuthToken();
 
-        //create a game
         String gameName = "Test Game";
         TestCreateResult createResult = serverFacade.createGame(new TestCreateRequest(gameName), auth);
 
-        //join the game
         serverFacade.joinPlayer(new TestJoinRequest(ChessGame.TeamColor.WHITE, createResult.getGameID()), auth);
 
         Assertions.assertTrue(initialRowCount < getDatabaseRows(), "No new data added to database");
 
-        // Test that we can read the data after a restart
         stopServer();
         startServer();
 
-        //list games using the auth
         TestListResult listResult = serverFacade.listGames(auth);
         Assertions.assertEquals(200, serverFacade.getStatusCode(), "Server response code was not 200 OK");
         Assertions.assertEquals(1, listResult.getGames().length, "Missing game(s) in database after restart");
@@ -76,7 +72,6 @@ public class DatabaseTests {
         Assertions.assertEquals(TEST_USER.getUsername(), game1.getWhiteUsername(),
                 "White player username changed after restart");
 
-        //test that we can still log in
         serverFacade.login(TEST_USER);
         Assertions.assertEquals(200, serverFacade.getStatusCode(), "Unable to login");
     }

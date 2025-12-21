@@ -35,6 +35,19 @@ public class Server {
 
         javalin = Javalin.create(config -> {
             config.staticFiles.add("web");
+            config.jsonMapper(new io.javalin.json.JsonMapper() {
+                private final com.google.gson.Gson gson = new com.google.gson.Gson();
+
+                @Override
+                public String toJsonString(Object obj, java.lang.reflect.Type type) {
+                    return gson.toJson(obj, type);
+                }
+
+                @Override
+                public <T> T fromJsonString(String json, java.lang.reflect.Type type) {
+                    return gson.fromJson(json, type);
+                }
+            });
         }).exception(DataAccessException.class, (e, ctx) -> {
             ctx.status(500);
             ctx.json(Map.of("message", "Error: " + e.getMessage()));

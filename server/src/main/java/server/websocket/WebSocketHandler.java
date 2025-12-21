@@ -62,11 +62,9 @@ public class WebSocketHandler {
             String username = auth.username();
             connections.add(username, session, command.getGameID());
 
-            // Send game to the connecting user
             var loadGame = new LoadGameMessage(game.game());
             session.getRemote().sendString(gson.toJson(loadGame));
 
-            // Notify others
             String role;
             if (username.equals(game.whiteUsername())) {
                 role = "white";
@@ -102,13 +100,11 @@ public class WebSocketHandler {
             ChessGame game = gameData.game();
             String username = auth.username();
 
-            // Check if game is over
             if (game.isGameOver()) {
                 sendError(session, "Error: game is over");
                 return;
             }
 
-            // Check if it's the player's turn
             ChessGame.TeamColor playerColor = null;
             if (username.equals(gameData.whiteUsername())) {
                 playerColor = ChessGame.TeamColor.WHITE;
@@ -126,11 +122,9 @@ public class WebSocketHandler {
                 return;
             }
 
-            // Make the move
             ChessMove move = command.getMove();
             game.makeMove(move);
 
-            // Update database
             GameData updatedGame = new GameData(
                 gameData.gameID(),
                 gameData.whiteUsername(),
@@ -138,18 +132,15 @@ public class WebSocketHandler {
                 gameData.gameName(),
                 game
             );
-            dataAccess.updateGame(updatedGame);
+            dataAccess.gameUpdate(updatedGame);
 
-            // Send updated game to all clients
             var loadGame = new LoadGameMessage(game);
             connections.broadcast(command.getGameID(), null, gson.toJson(loadGame));
 
-            // Send move notification
             String moveStr = formatMove(move);
             var notifyMsg = new NotificationMessage(username + " moved " + moveStr);
             connections.broadcast(command.getGameID(), username, gson.toJson(notifyMsg));
 
-            // Check for check/checkmate/stalemate
             ChessGame.TeamColor opponent = playerColor == ChessGame.TeamColor.WHITE 
                 ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
             
@@ -157,12 +148,12 @@ public class WebSocketHandler {
                 var checkmate = new NotificationMessage(opponent + " is in checkmate! " + username + " wins!");
                 connections.broadcast(command.getGameID(), null, gson.toJson(checkmate));
                 game.setGameOver(true);
-                dataAccess.updateGame(updatedGame);
+                dataAccess.gameUpdate(updatedGame);
             } else if (game.isInStalemate(opponent)) {
                 var stalemate = new NotificationMessage("Stalemate! The game is a draw.");
                 connections.broadcast(command.getGameID(), null, gson.toJson(stalemate));
                 game.setGameOver(true);
-                dataAccess.updateGame(updatedGame);
+                dataAccess.gameUpdate(updatedGame);
             } else if (game.isInCheck(opponent)) {
                 var check = new NotificationMessage(opponent + " is in check!");
                 connections.broadcast(command.getGameID(), null, gson.toJson(check));
@@ -187,7 +178,6 @@ public class WebSocketHandler {
             GameData gameData = dataAccess.getGame(command.getGameID());
             
             if (gameData != null) {
-                // Remove player from game if they were playing
                 String white = gameData.whiteUsername();
                 String black = gameData.blackUsername();
                 
@@ -204,7 +194,7 @@ public class WebSocketHandler {
                     gameData.gameName(),
                     gameData.game()
                 );
-                dataAccess.updateGame(updatedGame);
+                dataAccess.gameUpdate(updatedGame);
             }
 
             connections.remove(username);
@@ -233,7 +223,6 @@ public class WebSocketHandler {
                 return;
             }
 
-            // Check if user is a player
             if (!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())) {
                 sendError(session, "Error: observers cannot resign");
                 return;
@@ -246,7 +235,6 @@ public class WebSocketHandler {
                 return;
             }
 
-            // Mark game as over
             game.setGameOver(true);
             GameData updatedGame = new GameData(
                 gameData.gameID(),
@@ -255,7 +243,7 @@ public class WebSocketHandler {
                 gameData.gameName(),
                 game
             );
-            dataAccess.updateGame(updatedGame);
+            dataAccess.gameUpdate(updatedGame);
 
             var notifyMsg = new NotificationMessage(username + " resigned. Game over.");
             connections.broadcast(command.getGameID(), null, gson.toJson(notifyMsg));

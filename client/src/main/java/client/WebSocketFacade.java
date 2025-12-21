@@ -23,7 +23,7 @@ public class WebSocketFacade extends Endpoint {
     private GameHandler gameHandler;
 
     public interface GameHandler {
-        void gameUodate(ChessGame game);
+        void gameUpdate(ChessGame game);
         void message(String message);
     }
 
@@ -48,7 +48,7 @@ public class WebSocketFacade extends Endpoint {
         switch (serverMessage.getServerMessageType()) {
             case LOAD_GAME -> {
                 LoadGameMessage loadGame = gson.fromJson(message, LoadGameMessage.class);
-                gameHandler.gameUodate(loadGame.getGame());
+                gameHandler.gameUpdate(loadGame.getGame());
             }
             case ERROR -> {
                 ErrorMessage error = gson.fromJson(message, ErrorMessage.class);
