@@ -29,3 +29,15 @@
 - not reversed. Unequal objects can share a hash code
 - A hashCode() that ignores a field that equals() uses is still legal because objects that are truly equal will still share that field
 - The cost of this is performance since more objects collide in the same bucket. HashMap / HashSet lookups become linear scan instead of instant
+
+#### Enums vs regular objects in equals()
+
+- Enum constants (in this ex: Queen, Rook, etc.) are guaranteed to exist as exactly one single object for the whole program. Java never creates a second copy of PieceType.QUEEN
+- So == is always safe and correct on an enum. It's checking identity not value but there is only one object to be identical to
+- == on enums is also null safe
+- Regular classes don't have this guarantee. two separately new objects can represent the same value so == checks the wrong thing (identity not value). Objects.equals()/.equals() is used instead
+
+Composing equals() / hashCode() across nested objects
+
+- When a class holds fields that are themselves objects with their own correct equals() don't rederive the field by field comparison. Use that object's own equals()
+- getting .equals() right first matters because other classes will build on top of it instead of duplicating it sometimes

@@ -9,9 +9,9 @@ Goal: Get the board to start correctly and all of the pieces move with their cor
 
 Step plan (for now):
 -go class by class- easier to understand than working in between all of them
-1. ChessPosition (depends on nothing)
+1. ✓  ChessPosition (depends on nothing)
        Tests that two positions are equal only when both row and column match
-2. ChessMove (depends on nothing)
+2. ✓   ChessMove (depends on nothing)
        Tests that two moves are equal only when the start, end and promotion piece all match
 3. ChessPiece (i dont think all tests can pass before all moves are implemented but some will)
        Tests if each space lets pieces exist, no weird crashes
