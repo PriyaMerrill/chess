@@ -8,6 +8,7 @@ package chess;
  */
 public class ChessBoard {
 
+    //Constructor of this class initially makes
     public ChessBoard() {
         
     }

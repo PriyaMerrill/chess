@@ -8,10 +8,7 @@ Phase 0:
 Goal: Get the board to start correctly and all of the pieces move with their correct rules
 
 Step plan (for now):
-
-First before anything else: initialize all constructors and easy get/set methods
-Put in hash and equals for all (generate but probably will have to change some as this goes)
-
+-go class by class- easier to understand than working in between all of them
 1. ChessPosition (depends on nothing)
        Tests that two positions are equal only when both row and column match
 2. ChessMove (depends on nothing)
