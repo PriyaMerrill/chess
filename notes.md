@@ -37,7 +37,32 @@
 - == on enums is also null safe
 - Regular classes don't have this guarantee. two separately new objects can represent the same value so == checks the wrong thing (identity not value). Objects.equals()/.equals() is used instead
 
-Composing equals() / hashCode() across nested objects
+#### Composing equals() / hashCode() across nested objects
 
 - When a class holds fields that are themselves objects with their own correct equals() don't rederive the field by field comparison. Use that object's own equals()
 - getting .equals() right first matters because other classes will build on top of it instead of duplicating it sometimes
+
+#### 2D arrays
+
+- Type[][] name = new Type[...][...]; an array of arrays
+- Access with name[...][...]
+- Object type arrays are automatically null so no extra free empty spot logic is needed
+
+#### 1-indexed vs 0-indexed coordinates
+
+- ChessPosition rows and columns went from 1-8
+- array indexes are 0-7
+- Convert with variable-1
+- Use that conversion only when indexing directly into the array: doing this with addPiece and getPiece
+
+#### @BeforeEach and test fails
+- A @BeforeEach method runs before every @Test in the class
+- this is why when I was testing the first parts all tests were failing
+- if the shared setup throws every test in the class fails even if the code is right
+
+#### Arrays and equals() / hashCode()
+- Arrays don't override equals() so comparing two arrays checks object identity and not the contents
+- two arrays with identical values but different objects would come back false
+- In a 2D array use "deep"
+- Arrays.deepEquals(a, b)
+- Regular Arrays.equals() only compares one level deep so its not enough for 2D
