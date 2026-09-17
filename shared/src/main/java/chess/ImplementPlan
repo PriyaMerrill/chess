@@ -1,0 +1,34 @@
+Phase 0:
+-ChessBoard
+-ChessMove
+-ChessPiece
+-ChessPosition
+-EqualsTesting
+
+Goal: Get the board to start correctly and all of the pieces move with their correct rules
+
+Step plan (for now):
+
+First before anything else: initialize all constructors and easy get/set methods
+Put in hash and equals for all (generate but probably will have to change some as this goes)
+
+1. ChessPosition (depends on nothing)
+       Tests that two positions are equal only when both row and column match
+2. ChessMove (depends on nothing)
+       Tests that two moves are equal only when the start, end and promotion piece all match
+3. ChessPiece (i dont think all tests can pass before all moves are implemented but some will)
+       Tests if each space lets pieces exist, no weird crashes
+4. ChessBoard
+    No movements required, passes by all of the pieces being in the right spot
+5. Logic for pieces moving- make an interface that calculates how pieces move
+6. Use the calculator for most of the pieces
+    No limit pieces:
+        -Bishop
+        -Rook
+        -Queen
+    Limit pieces:
+        -King
+        -Knight
+7. Logic for pawn moving- make an interface that calculates how the pawn moves (promotion logic!!)
+8. Get pawn moves to work
+9. Rerun everything, all tests should pass
