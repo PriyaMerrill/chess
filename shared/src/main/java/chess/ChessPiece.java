@@ -2,6 +2,7 @@ package chess;
 
 import chess.PieceMoves.BishopMoves;
 import chess.PieceMoves.MovesCalculator;
+import chess.PieceMoves.QueenMoves;
 import chess.PieceMoves.RookMoves;
 
 import java.util.ArrayList;
@@ -65,6 +66,10 @@ public class ChessPiece {
             }
             case ROOK -> {
                 MovesCalculator calc = new RookMoves();
+                return calc.makeMoves(board, myPosition);
+            }
+            case QUEEN -> {
+                MovesCalculator calc = new QueenMoves();
                 return calc.makeMoves(board, myPosition);
             }
             default -> {
