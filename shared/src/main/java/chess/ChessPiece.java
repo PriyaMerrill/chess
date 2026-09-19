@@ -73,6 +73,14 @@ public class ChessPiece {
                 MovesCalculator calc = new KnightMoves();
                 return calc.makeMoves(board, myPosition);
             }
+            case KING -> {
+                MovesCalculator calc = new KingMoves();
+                return calc.makeMoves(board, myPosition);
+            }
+            case PAWN -> {
+                MovesCalculator calc = new PawnMoves();
+                return calc.makeMoves(board, myPosition);
+            }
             default -> {
                 return new ArrayList<>();
             }
