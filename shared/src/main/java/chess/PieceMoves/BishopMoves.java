@@ -8,7 +8,8 @@ import java.util.Collection;
 public class BishopMoves implements MovesCalculator{
     @Override
     public Collection<ChessMove> makeMoves(ChessBoard board, ChessPosition position){
+        boolean limit = false;
         int[][] directions = {{1,1}, {1,-1}, {-1,1}, {-1,-1}};
-        return MovesCalculator.slidePieces(board, position, directions);
+        return MovesCalculator.movePieces(board, position, directions, limit);
     }
 }

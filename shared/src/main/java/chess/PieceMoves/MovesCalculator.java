@@ -8,8 +8,7 @@ import java.util.Collection;
 //this will hold every piece's move logic
 public interface MovesCalculator {
     Collection<ChessMove> makeMoves(ChessBoard board, ChessPosition position);
-
-    static Collection<ChessMove> slidePieces(ChessBoard board, ChessPosition position, int[][] directions){
+    static Collection<ChessMove> movePieces(ChessBoard board, ChessPosition position, int[][] directions, boolean limit){
         Collection<ChessMove> moves = new ArrayList<>();
         ChessGame.TeamColor myTeam = board.getPiece(position).getTeamColor();
 
@@ -32,8 +31,12 @@ public interface MovesCalculator {
                     moves.add(new ChessMove(position, newPos, null));
                     break;
                 }
-                newRow += direction[0];
-                newCol += direction[1];
+                if (!limit) {
+                    newRow += direction[0];
+                    newCol += direction[1];
+                } else {
+                    break;
+                }
             }
         }
         return moves;
