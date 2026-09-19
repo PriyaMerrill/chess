@@ -13,14 +13,14 @@ Step plan (for now):
        Tests that two positions are equal only when both row and column match
 2. ✓   ChessMove (depends on nothing)
        Tests that two moves are equal only when the start, end and promotion piece all match
-3. ChessPiece (i dont think all tests can pass before all moves are implemented but some will)
+3. ✓   ChessPiece (i dont think all tests can pass before all moves are implemented but some will)
        Tests if each space lets pieces exist, no weird crashes
-4. ChessBoard
+4. ✓   ChessBoard
     No movements required, passes by all of the pieces being in the right spot
-5. Logic for pieces moving- make an interface that calculates how pieces move
+5. ✓   Logic for pieces moving- make an interface that calculates how pieces move
 6. Use the calculator for most of the pieces
     No limit pieces:
-        -Bishop
+        -✓   Bishop
         -Rook
         -Queen
     Limit pieces:

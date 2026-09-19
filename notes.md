@@ -67,7 +67,27 @@
 - Arrays.deepEquals(a, b)
 - Regular Arrays.equals() only compares one level deep so its not enough for 2D
 
-Interfaces
+#### Interfaces
 - An interface is like a contract. A class that implements it writes the method body
 - Can hold a static method with a body for shared helper logic
 - static interface methods aren't inherited so call it through name of interface
+- A class that implements has to write an Override method
+- the contract method can't be static cause each class needs its own version
+
+#### Collection vs ArrayList
+- Collection itself is an interface
+- ArrayList is a real class that fulfills it
+- Collection<ChessMove> moves = new ArrayList<>();
+- Collection is the general one and ArrayList is the specific one
+
+#### The Sliding algorithm
+- Each direction is a pair {row change, col change}
+- for each direction take a step and decide what is happening at the new square
+- if its off the board stop
+- if its empty add the move and keep going
+- if its own team is on it its not a move
+- if the other team is on it add the move and stop
+- Only empty spots keep going to the next square is after looping
+- if its on the board that means the row is between 1 and 8 and the column is between 1 and 8
+
+

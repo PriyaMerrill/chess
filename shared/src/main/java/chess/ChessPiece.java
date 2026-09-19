@@ -1,5 +1,9 @@
 package chess;
 
+import chess.PieceMoves.BishopMoves;
+import chess.PieceMoves.MovesCalculator;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -53,7 +57,15 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        switch (type){
+            case BISHOP -> {
+                MovesCalculator calc = new BishopMoves();
+                return calc.makeMoves(board, myPosition);
+            }
+            default -> {
+                return new ArrayList<>();
+            }
+        }
     }
 
     @Override
