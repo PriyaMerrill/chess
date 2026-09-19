@@ -66,3 +66,8 @@
 - In a 2D array use "deep"
 - Arrays.deepEquals(a, b)
 - Regular Arrays.equals() only compares one level deep so its not enough for 2D
+
+Interfaces
+- An interface is like a contract. A class that implements it writes the method body
+- Can hold a static method with a body for shared helper logic
+- static interface methods aren't inherited so call it through name of interface
