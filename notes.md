@@ -90,4 +90,10 @@
 - Only empty spots keep going to the next square is after looping
 - if its on the board that means the row is between 1 and 8 and the column is between 1 and 8
 
-
+#### Pawn algorithm
+- Every other piece uses empty or other team. The pawn splits the two; forward needs empty, diagonal needs oter team
+- Direction and start depend on team
+- Two step goes right after 1 step so a pawn doesn't jump over another piece
+- captures are separate a blocked pawn can still capture
+- promotion is four possible moves for one spot, never for two step
+- promotion check is called from any spot a move is added

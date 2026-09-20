@@ -21,11 +21,11 @@ Step plan (for now):
 6. Use the calculator for most of the pieces
     No limit pieces:
         -✓   Bishop
-        -Rook
-        -Queen
+        -✓   Rook
+        -✓   Queen
     Limit pieces:
-        -King
-        -Knight
-7. Logic for pawn moving- make an interface that calculates how the pawn moves (promotion logic!!)
-8. Get pawn moves to work
-9. Rerun everything, all tests should pass
+        -✓   King
+        -✓   Knight
+7. NEVER MIND- (plan changed while implementing) Logic for pawn moving- make an interface that calculates how the pawn moves (promotion logic!!)
+8. ✓   Get pawn moves to work
+9. ✓   Rerun everything, all tests should pass
