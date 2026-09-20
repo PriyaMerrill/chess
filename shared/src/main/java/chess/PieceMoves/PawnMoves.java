@@ -32,6 +32,14 @@ public class PawnMoves implements MovesCalculator{
 
         if ((nextRow >= 1 && nextRow <= 8) && (board.getPiece(newSpot) == null )){
             movePawn.add(new ChessMove(position, newSpot, null));
+
+            //a pawn can move two spots on the first turn
+            //row of the square two ahead positive for white negative for black
+            int twoStep = row+moveForward*2;
+            ChessPosition moveTwo = new ChessPosition(twoStep, col);
+            if ((row == startRow) && (board.getPiece(moveTwo) == null)){
+                movePawn.add(new ChessMove(position, moveTwo, null));
+            }
         }
 
         return movePawn;
