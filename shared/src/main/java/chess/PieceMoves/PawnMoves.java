@@ -1,9 +1,6 @@
 package chess.PieceMoves;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPosition;
+import chess.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +38,24 @@ public class PawnMoves implements MovesCalculator{
                 movePawn.add(new ChessMove(position, moveTwo, null));
             }
         }
+        pawnCapture(board, position, movePawn, myTeam, nextRow);
 
         return movePawn;
+    }
+
+    private void pawnCapture(ChessBoard board, ChessPosition position, Collection<ChessMove>movePawn, ChessGame.TeamColor myTeam, int nextRow){
+        int col = position.getColumn();
+        int[] diagonals = {-1,1};
+        for (int diagonal : diagonals){
+            int captureCol = col + diagonal;
+            if (captureCol >= 1 && captureCol <= 8){
+                ChessPosition captureSpot = new ChessPosition(nextRow,captureCol);
+                ChessPiece targetPiece = board.getPiece(captureSpot);
+
+                if ((targetPiece != null) && (targetPiece.getTeamColor() != myTeam)){
+                    movePawn.add(new ChessMove(position, captureSpot, null));
+                }
+            }
+        }
     }
 }
