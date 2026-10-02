@@ -1,0 +1,19 @@
+Phase 1 core: ChessGame
+
+Goal: full game works, track turns, only legal moves, see if someone is in check, detect check, checkmate, and stalemate
+
+ChessGame does mostly glue work and uses piece move logic already made
+
+Step plan for now:
+1. ChessGame state
+2. See if in check
+    -find king and see if any piece from the other team can land on it
+3. validMoves - start with piece's normal moves, remove any that leave their king in check
+    -need a way to try a move without actually changing the real board
+4. actually move
+    -move piece, see if promotion, switch turns
+5. See if its checkmate or stalemate
+    -does a team have any valid move?
+6. ChessGame equals and hash
+7. pass all tests
+8. castling
