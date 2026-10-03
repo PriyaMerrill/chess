@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -59,7 +60,29 @@ public class ChessGame {
         //remove piece from start pos and put it at end pos, check if promotion
         //if that piece team is not in check on the copy board add it to validMoves
         //return validMoves
-        return null;
+        ChessPiece piece = board.getPiece(startPosition);
+        if(piece == null){
+            return null;
+        }
+        Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        for(ChessMove move : potentialMoves){
+            ChessBoard boardCopy = board.copyOfBoard();
+            boardCopy.addPiece(startPosition, null);
+
+            if(move.getPromotionPiece() != null){
+                ChessPiece promoPiece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+                boardCopy.addPiece(move.getEndPosition(), promoPiece);
+            } else {
+                boardCopy.addPiece(move.getEndPosition(), piece);
+            }
+
+            if (!isInCheck(piece.getTeamColor(), boardCopy)){
+                validMoves.add(move);
+            }
+        }
+        return validMoves;
     }
 
     /**

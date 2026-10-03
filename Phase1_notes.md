@@ -9,3 +9,8 @@
 #### Shadowing
 - A parameter with the same name as a field hides the field
 - can't forget the this.variable
+
+### Copy
+- don't change the real variables and objects to check a hypothetical
+- copy the data and change the copy
+- That also means each potential change needs its own copy or tests would pile up on each other
