@@ -5,7 +5,7 @@ Goal: full game works, track turns, only legal moves, see if someone is in check
 ChessGame does mostly glue work and uses piece move logic already made
 
 Step plan for now:
-1. ChessGame state
+1. ChessGame state and hash / equals
 2. See if in check
     -find king and see if any piece from the other team can land on it
 3. validMoves - start with piece's normal moves, remove any that leave their king in check
@@ -14,6 +14,5 @@ Step plan for now:
     -move piece, see if promotion, switch turns
 5. See if its checkmate or stalemate
     -does a team have any valid move?
-6. ChessGame equals and hash
-7. pass all tests
-8. castling
+6. pass all tests
+7. castling
