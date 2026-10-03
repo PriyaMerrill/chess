@@ -52,6 +52,13 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        //get piece and return null if no piece
+        //get moves for piece and have a list
+        //for each piece that might move:
+        //make a copy board
+        //remove piece from start pos and put it at end pos, check if promotion
+        //if that piece team is not in check on the copy board add it to validMoves
+        //return validMoves
         return null;
     }
 
@@ -71,8 +78,15 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
-    public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition kingPos = findKing(teamColor);
+
+    //still have a public version for other things to use
+    public boolean isInCheck (TeamColor teamColor){
+        return isInCheck(teamColor, board);
+    }
+
+    //change to private and also take a board so it checks the copy board and not the real one
+    private boolean isInCheck(TeamColor teamColor, ChessBoard checkBoard) {
+        ChessPosition kingPos = findKing(teamColor, checkBoard);
         if (kingPos == null){
             return false;
         }
@@ -85,9 +99,9 @@ public class ChessGame {
         for(int row = 1; row <= 8; row++){
             for(int col=1; col<=8; col++){
                 ChessPosition pos = new ChessPosition(row, col);
-                ChessPiece pieceThere = board.getPiece(pos);
+                ChessPiece pieceThere = checkBoard.getPiece(pos);
                 if(pieceThere != null && pieceThere.getTeamColor() != teamColor){
-                    Collection<ChessMove> moves = pieceThere.pieceMoves(board, pos);
+                    Collection<ChessMove> moves = pieceThere.pieceMoves(checkBoard, pos);
                     for (ChessMove move : moves){
                         if (move.getEndPosition().equals(kingPos)){
                             return true;
@@ -140,7 +154,7 @@ public class ChessGame {
     }
 
     //method for looking for the king on the board
-    private ChessPosition findKing(ChessGame.TeamColor teamColor){
+    private ChessPosition findKing(ChessGame.TeamColor teamColor, ChessBoard checkBoard){
         //loop through rows and columns
         //position for square looked at and get piece there
         //if there is a piece see if it is a king and matches team
@@ -148,7 +162,7 @@ public class ChessGame {
         for(int row=1; row<=8; row++){
             for(int col=1; col<=8; col++){
                 ChessPosition position = new ChessPosition(row, col);
-                ChessPiece pieceThere = board.getPiece(position);
+                ChessPiece pieceThere = checkBoard.getPiece(position);
 
                 if(pieceThere != null && pieceThere.getPieceType() == ChessPiece.PieceType.KING && pieceThere.getTeamColor() == teamColor){
                     return position;
