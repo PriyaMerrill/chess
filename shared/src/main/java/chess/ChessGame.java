@@ -92,7 +92,35 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        return;
+        //get the piece at the move start spot
+        //if there is no piece there throw exception
+        //if the piece doesn't belong to the team whose turn it is throw exception
+        //get all valid moves for the piece
+        //if the move is a promotion create promoted piece and put it at the end spot
+        //if it isnt put the original piece at the end spot
+        //switch team turns
+
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null || piece.getTeamColor() != team) {
+            throw new InvalidMoveException();
+        }
+        Collection<ChessMove> moves = validMoves(move.getStartPosition());
+
+        if (moves == null || !moves.contains(move)){
+            throw new InvalidMoveException();
+        }
+        board.addPiece(move.getStartPosition(), null);
+        if (move.getPromotionPiece() != null){
+            ChessPiece promoPiece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+            board.addPiece(move.getEndPosition(), promoPiece);
+        } else {
+            board.addPiece(move.getEndPosition(), piece);
+        }
+        if(team == TeamColor.WHITE){
+            team = TeamColor.BLACK;
+        } else {
+            team = TeamColor.WHITE;
+        }
     }
 
     /**
