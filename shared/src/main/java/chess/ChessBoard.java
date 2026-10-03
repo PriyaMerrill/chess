@@ -67,6 +67,26 @@ public class ChessBoard {
 
     }
 
+    public ChessBoard copyOfBoard(){
+        //create a new board
+        //loop through rows and cols
+        //look at all pieces on board
+        //make a position for this square and get pieces from this board
+        //if position has a piece on og board add that to the same position on new board
+        //return new board
+        ChessBoard copy = new ChessBoard();
+        for (int row = 1; row <= 8; row++){
+            for (int col = 1; col <= 8; col++){
+                ChessPiece piece = board[row-1][col-1];
+                if (piece != null){
+                    ChessPosition position = new ChessPosition(row,col);
+                    copy.addPiece(position, piece);
+                }
+            }
+        }
+        return copy;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
