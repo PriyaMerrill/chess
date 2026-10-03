@@ -172,7 +172,30 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return false;
+        //if team is not in check it isnt in checkmate
+        //look through every square on the board
+        //look at pieces on this team
+        //if any piece has a valid move it isnt checkmate
+        //if in check and no valid moves return true
+
+        if (!isInCheck(teamColor)){
+            return false;
+        }
+        for(int row = 1; row <= 8; row++){
+            for (int col=1; col<=8; col++){
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(pos);
+
+                if(piece != null && piece.getTeamColor()==teamColor){
+                    Collection<ChessMove> moves = validMoves(pos);
+
+                    if(moves != null && !moves.isEmpty()){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -183,7 +206,29 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return false;
+        //if team is in check it can't be stalemate
+        //look through every square on the board
+        //only look at pieces belonging to this team
+        //if any piece has a valid move it isnt stalemate
+        //not in check and no valid moves return true
+
+        if (isInCheck(teamColor)){
+            return false;
+        }
+        for (int row = 1; row <= 8; row++){
+            for (int col=1; col<=8; col++){
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(pos);
+
+                if(piece != null && piece.getTeamColor() == teamColor){
+                    Collection<ChessMove> moves = validMoves(pos);
+                    if (moves != null && !moves.isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
