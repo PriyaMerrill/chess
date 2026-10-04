@@ -69,14 +69,7 @@ public class ChessGame {
 
         for(ChessMove move : potentialMoves){
             ChessBoard boardCopy = board.copyOfBoard();
-            boardCopy.addPiece(startPosition, null);
-
-            if(move.getPromotionPiece() != null){
-                ChessPiece promoPiece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
-                boardCopy.addPiece(move.getEndPosition(), promoPiece);
-            } else {
-                boardCopy.addPiece(move.getEndPosition(), piece);
-            }
+            actuallyMove(boardCopy, move);
 
             if (!isInCheck(piece.getTeamColor(), boardCopy)){
                 validMoves.add(move);
@@ -109,13 +102,9 @@ public class ChessGame {
         if (moves == null || !moves.contains(move)){
             throw new InvalidMoveException();
         }
-        board.addPiece(move.getStartPosition(), null);
-        if (move.getPromotionPiece() != null){
-            ChessPiece promoPiece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
-            board.addPiece(move.getEndPosition(), promoPiece);
-        } else {
-            board.addPiece(move.getEndPosition(), piece);
-        }
+
+        actuallyMove(board, move);
+
         if(team == TeamColor.WHITE){
             team = TeamColor.BLACK;
         } else {
@@ -268,6 +257,20 @@ public class ChessGame {
 
         //no king was found
         return null;
+    }
+
+    //applies a move to a board so the same logic is reused
+    //gets the piece, makes it start position clear, moves it to end position
+    //deals with promotion by making the promoted piece
+    private void actuallyMove (ChessBoard mainBoard, ChessMove move){
+        ChessPiece piece = mainBoard.getPiece(move.getStartPosition());
+        mainBoard.addPiece(move.getStartPosition(), null);
+        if (move.getPromotionPiece() != null){
+            ChessPiece promoPiece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+            mainBoard.addPiece(move.getEndPosition(), promoPiece);
+        } else {
+            mainBoard.addPiece(move.getEndPosition(), piece);
+        }
     }
 
     @Override

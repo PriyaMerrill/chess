@@ -16,3 +16,14 @@ Step plan for now:
     -does a team have any valid move?
 6. pass all tests
 7. castling
+
+Extra Credit Implement:
+1. Refactor first so en passant removes a pawn that isnt on the end square and castling moves a rook
+2. En passant
+- remember the last move
+- add the move as an option for a pawn
+- applying it gets rid of the captured pawn
+3. Castling
+- remember which pieces have moved
+- king cant be in check, cross an attacked square, or end in check
+- applying it moves king and rook
