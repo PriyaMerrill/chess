@@ -14,6 +14,9 @@ public class ChessGame {
     //this is what the game remembers
     private ChessBoard board;
     private ChessGame.TeamColor team;
+    private ChessMove lastMove = null;
+
+    //castling variables
 
     public ChessGame() {
         this.board = new ChessBoard();
@@ -64,8 +67,35 @@ public class ChessGame {
         if(piece == null){
             return null;
         }
-        Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> potentialMoves = new ArrayList<>(piece.pieceMoves(board, startPosition));
         Collection<ChessMove> validMoves = new ArrayList<>();
+
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN && lastMove != null){
+            ChessPosition lastStart = lastMove.getStartPosition();
+            ChessPosition lastEnd = lastMove.getEndPosition();
+            ChessPiece lastPiece = board.getPiece(lastEnd);
+
+            if (lastPiece != null
+                    && lastPiece.getPieceType() == ChessPiece.PieceType.PAWN
+                    && lastPiece.getTeamColor() != piece.getTeamColor()
+                    && lastStart.getColumn() == lastEnd.getColumn()
+                    && Math.abs(lastStart.getRow() - lastEnd.getRow()) == 2
+                    && lastEnd.getRow() == startPosition.getRow()
+                    && Math.abs(lastEnd.getColumn() - startPosition.getColumn()) == 1) {
+                int direction;
+                if (piece.getTeamColor() == TeamColor.WHITE){
+                    direction = 1;
+                } else {
+                    direction = -1;
+                }
+
+                ChessPosition enPassant = new ChessPosition(startPosition.getRow() + direction, lastEnd.getColumn());
+                if (board.getPiece(enPassant) == null){
+                    potentialMoves.add(new ChessMove(startPosition, enPassant, null));
+                }
+            }
+        }
+
 
         for(ChessMove move : potentialMoves){
             ChessBoard boardCopy = board.copyOfBoard();
@@ -110,6 +140,7 @@ public class ChessGame {
         } else {
             team = TeamColor.WHITE;
         }
+        lastMove = move;
     }
 
     /**
@@ -227,6 +258,7 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
+        lastMove = null;
     }
 
     /**
@@ -264,6 +296,15 @@ public class ChessGame {
     //deals with promotion by making the promoted piece
     private void actuallyMove (ChessBoard mainBoard, ChessMove move){
         ChessPiece piece = mainBoard.getPiece(move.getStartPosition());
+        ChessPiece endPiece = mainBoard.getPiece(move.getEndPosition());
+        mainBoard.addPiece(move.getStartPosition(), null);
+
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN
+            && move.getStartPosition().getColumn() != move.getEndPosition().getColumn()
+                && endPiece == null) {
+            ChessPosition capturePawn = new ChessPosition(move.getStartPosition().getRow(), move.getEndPosition().getColumn());
+            mainBoard.addPiece(capturePawn, null);
+        }
         mainBoard.addPiece(move.getStartPosition(), null);
         if (move.getPromotionPiece() != null){
             ChessPiece promoPiece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
